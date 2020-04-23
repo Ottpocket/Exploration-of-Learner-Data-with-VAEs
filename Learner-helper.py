@@ -13,7 +13,6 @@ os.chdir('C:/Users/andre/Desktop/Ecole/TF/Educational Assessment')
 import Teaching_vaes_helper
 
 
-
 ###############################################################################
 #get_stats: obtains the RMSE and CORR for the A, B, and Theta estimations
 #INPUTS:
