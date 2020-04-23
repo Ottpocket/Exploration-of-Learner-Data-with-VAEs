@@ -4,43 +4,8 @@ Created on Mon Mar 16 08:05:27 2020
 
 @author: andre
 """
-import numpy as np
-import tensorflow as tf
-from tensorflow import keras as k
-import os
-import pandas as pd
-os.chdir('C:/Users/andre/Desktop/Ecole/TF/Educational Assessment')
-import Teaching_vaes_helper
 
 
-###############################################################################
-#get_stats: obtains the RMSE and CORR for the A, B, and Theta estimations
-#INPUTS:
-    #h: the history dict from the keras model
-    #qmat: the qmatrix
-    #amat: 
-    #b:
-    #students
-    #tests
-    #questions
-    #network_num: what number neural network is this?
-    #studtest: the first two rows of data which given the student num and the test num
-    #dist:
-#OUTPUTS:
-    #df_row: df with cols [students, tests, questions, dist, A_RMSE, A_Corr, Theta_RMSE, Theta_Corr, B_RMSE, B_Corr]
-###############################################################################
-def Get_stats(H, qmat, amat, bvec, students, thetas, tests, questions, network_num, studtest, dist):
-    #H = history_dict
-    #studtest = data.values[:,0:2]
-    A_list = [np.exp(a) for a in H.history['log_A']]
-    B_list = H.history['B']
-    th = H.history['thetas']
-    dfa, dfb = Teaching_vaes_helper.get_stats_over_time(A_list, B_list, amat, bvec, qmat, matrix= True)
-    th_avrb, th_RMSE, th_Corr = Teaching_vaes_helper.get_theta_stats_v2(thetas, th[-1], studtest)
-    df_row = [students, tests, questions, dist, network_num, dfa['AVRB'][dfa.index[-1]], dfa['RMSE'][dfa.index[-1]],
-              dfa['Corr'][dfa.index[-1]], dfb['AVRB'][dfb.index[-1]], dfb['RMSE'][dfb.index[-1]],
-              dfb['Corr'][dfb.index[-1]], th_avrb, th_RMSE, th_Corr]
-    return (dfa, dfb, df_row)
 
 
 
