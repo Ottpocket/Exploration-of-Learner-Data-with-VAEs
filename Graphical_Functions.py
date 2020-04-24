@@ -48,9 +48,9 @@ def Corr(correct, guess, rm_zero = True):
     #qmat: the qmatrix
     #amat: 
     #b:
-    #students
-    #tests
-    #questions
+    #students: number of students
+    #tests: number of tests
+    #questions: number of questions
     #network_num: what number neural network is this?
     #studtest: the first two rows of data which given the student num and the test num
     #dist:

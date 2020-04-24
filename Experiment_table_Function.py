@@ -51,11 +51,11 @@ def Experiment_table(num_students, num_tests, num_questions, num_networks, which
                         #create_network
                         model = Teaching_Vae(dist = dist, qmat = qmat, num_questions = questions)
                         #get the relevant stats from the trained network
-                        history_dict = model.train(data = data.values.astype('float32'))
+                        history_dict = model.train(data = data)
                         dfa, dfb, df_row = Get_stats(H = history_dict, qmat = qmat, amat = amat, 
                                            bvec = bvec, students = students, thetas = thetas, tests = tests,
                                            questions = questions, network_num = networks, dist = dist,
-                                           studtest = data.values[:,0:2])
+                                           studtest = data[:,0:2])
                         df_list.append(df_row)
                         dfa_list.append(dfa)
                         dfb_list.append(dfb)

@@ -59,4 +59,5 @@ def Create_data(num_students, num_questions, num_tests, num_skills):
             data_rows.append(row)    
             
     data = pd.DataFrame(data = data_rows, columns = col_names)  
+    data = data.values.astype('float32')
     return (Q_mat, A, B, Theta, data)
