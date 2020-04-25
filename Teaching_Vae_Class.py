@@ -204,7 +204,7 @@ class Teaching_Vae:
                 logs['thetas'] = thetas_grabber(data[:,2:])
 
         early_stopping = k.callbacks.EarlyStopping(monitor='val_loss', min_delta=10, 
-                                                  patience=5)
+                                                  patience=5, restore_best_weights = True)
         nanstop = tf.keras.callbacks.TerminateOnNaN()
         #Training the model
         H = self.model.fit(data[:,2:], data[:,2:], validation_split = .05,
