@@ -10,10 +10,9 @@ import pandas as pd
 import numpy as np
 import os
 os.chdir("C:/Users/andre/Documents/GitHub/Exploration-of-Learner-Data-with-VAEs")
-from Experiment_table_Function import Experiment_table
 from Teaching_Vae_Class import Teaching_Vae
 from Data_Gen import Create_data
-from Graphical_Functions import Get_stats, Table_1, get_stats_over_time
+from Graphical_Functions import Table_1, get_stats_over_time, get_theta_stats_v2
 
 #Creating the data for the network
 num_students = 10000
@@ -21,13 +20,24 @@ num_questions = 28
 num_tests = 10
 num_skills = 3
 dist = 'norm'
+#Getting data for NNs
 Q_mat, A, B, theta, data = Create_data(num_students = num_students, num_questions = num_questions,
                                     num_tests = num_tests, num_skills = num_skills)
+input_dat = [Q_mat, A, B, theta, data]
+
+#Training VAE
+vae = Teaching_Vae(dist = 'norm', qmat = Q_mat, num_questions = num_questions)
+H_vae = vae.train(data)
+get_stats_over_time([], [], A, B, Q_mat, matrix = False, H = H_vae)
+
+#Training AE
+ae = Teaching_Vae(dist = 'None', qmat = Q_mat, num_questions = num_questions)
+H_ae = vae.train(data)
+get_stats_over_time([], [], A, B, Q_mat, matrix = False, H = H_ae)
 
 
 #Replicating the Figures from the paper
-tab1, fig3, fig4 tab2, fig5, vae, ae, data_list = replication(num_students, num_questions, num_tests,
-                                          num_skills, dist)
+tab1, fig3, fig4, tab2, fig5, vae, ae, _ = Replication_of_Paper_Figures(input_dat, vae = vae, ae = ae)
 
 ###############################################################################
 #Replication_of_Paper_Figures: Function that trains a NN and replicates the data
@@ -56,7 +66,7 @@ tab1, fig3, fig4 tab2, fig5, vae, ae, data_list = replication(num_students, num_
 ###############################################################################
 def Replication_of_Paper_Figures(Input_data = None, num_students = 10000, 
                                  num_questions= 28, num_tests = 10, num_skills = 3,
-                                 dist= 'norm', Input_Vae = None, Input_Ae = None):
+                                 dist= 'norm', vae = None, ae = None):
     #Obtaining data for the Network
     if Input_data is not None:
         Q_mat, A, B, theta, data = Input_data
@@ -64,11 +74,16 @@ def Replication_of_Paper_Figures(Input_data = None, num_students = 10000,
         Q_mat, A, B, theta, data = Create_data(num_students, num_questions,
                                     num_tests, num_skills)
     #Initializing the networks
-    vae = Teaching_Vae(dist = 'norm', qmat = Q_mat, num_questions = A.shape[1]) 
-    H_vae = vae.train(data)
-    ae = Teaching_Vae(dist = 'None', qmat = Q_mat, num_questions = A.shape[1])
-    H_ae = ae.train(data)
-    
+    if vae is None:
+        vae = Teaching_Vae(dist = 'norm', qmat = Q_mat, num_questions = A.shape[1]) 
+        H_vae = vae.train(data)
+    else:
+        H_vae = vae.train(data, epochs = 1)
+    if ae is None:
+        ae = Teaching_Vae(dist = 'None', qmat = Q_mat, num_questions = A.shape[1])
+        H_ae = ae.train(data)
+    else:
+        H_ae = ae.train(data, epochs = 1)
     #Extracting the statistics from the networks
     dfa1_vae , dfa2_vae,  dfa3_vae, dfb_vae = get_stats_over_time(A_list=[], B_list=[], a_true = A, 
                                             b_true= B, qmat = Q_mat, matrix = False, H = H_vae)
@@ -105,4 +120,4 @@ def Replication_of_Paper_Figures(Input_data = None, num_students = 10000,
     thetas_true.columns = ['Theta{}_true'.format(i+1) for i in range(thetas_vae.shape[1])]
     fig5 = pd.concat([thetas_true,thetas_ae, thetas_vae], axis= 1)
     
-    return(tab1, fig3, fig4 tab2, fig5, vae, ae, [Q_mat, A, B, theta, data])
+    return(tab1, fig3, fig4, tab2, fig5, vae, ae, [Q_mat, A, B, theta, data])

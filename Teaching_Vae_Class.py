@@ -211,7 +211,7 @@ class Teaching_Vae:
         H = self.model.fit(data[:,2:], data[:,2:], validation_split = .05,
                            epochs=epochs, batch_size = 128, callbacks=[GetEmbeddings(), early_stopping, nanstop])
         return H
-
+        
     def plot_model(self):
         return k.utils.plot_model(self.model, 'my_first_model.png',show_shapes=True)
 
