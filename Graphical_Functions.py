@@ -81,13 +81,26 @@ def Get_stats(H, qmat, amat, bvec, students, thetas, tests, questions, network_n
 #   a_true: true values of 'a' from Data_Gen.py
 #   b_true: true vales of 'b'  '''''''
 #   matrix: do you want individual a rows or the whole thing as a?  default False for backwards compat    
+#   H: the history from a trained NN.  If this is given, A_list, B_list will be 
+#       autopopulated from H.
 #Output:
 #   a_1: dataframe where rows are the epoch number and the cols are epoch, AVRB, RMSE, and Corr
 #   a_2,a_3,b: dataframes of the same type
 ###############################################################################
-def get_stats_over_time(A_list, B_list, a_true, b_true, qmat, matrix = False):
+def get_stats_over_time(A_list, B_list, a_true, b_true, qmat, matrix = False, H = None):
+    if H is not None:
+        if matrix ==False:
+            A_list = [np.transpose(np.exp(a)) for a in H.history['log_A']]
+            qmat = np.transpose(qmat)
+            a_true = np.transpose(a_true)
+        else:
+            A_list = np.exp(H.history['log_A'])
+        B_list = np.exp(H.history['B'])
     b = []
-    num_questions = A_list[0].shape[1]
+    if H is not None:
+        num_questions = A_list[0].shape[0]
+    else:
+        num_questions = A_list[0].shape[1]
     if matrix == False:
         a_1 = []
         a_2 = []
@@ -141,21 +154,28 @@ def get_theta(list_of_theta_training_batches):
     #correct: (num_students, num_hidden_skills) the ground truth thetas
     #guess: (num_students*num_tests, num_hidden_skills) the guess from the nn
     #   of the students' hidden knowledge
-    #studtest: (num_students*num_tests, 2) cols: student, test_num
+    #studtest: (num_students*num_tests, 2) cols: student, test_num 
+    #table2: if True, give the output in shape of Table2 of paper
 #OUTPUT:
     #AVRB:
     #RMSE:
     #Corr:
 ###############################################################################    
-def get_theta_stats_v2(correct, guess, studtest):
+def get_theta_stats_v2(correct, guess, studtest, Table2 = False, model= None):
     cols = ['student', 'test']
     for i in range(guess.shape[1]):
         cols.append('skill{}'.format(i+1))
     guess_df = pd.DataFrame(data = np.hstack([studtest, guess]), columns = cols)
     guess_agg = guess_df.groupby('student').agg({'skill1':'mean', 'skill2':'mean', 'skill3':'mean'}).values
-    return (AVRB(correct, guess_agg), RMSE(correct, guess_agg), Corr(correct, guess_agg))
-
-
+    if Table2 == False:
+        return (AVRB(correct, guess_agg), RMSE(correct, guess_agg), Corr(correct, guess_agg))
+    else:
+        theta1 = [AVRB(correct[:,0], guess_agg[:,0]), RMSE(correct[:,0], guess_agg[:,0]), Corr(correct[:,0], guess_agg[:,0])]
+        theta2 = [AVRB(correct[:,1], guess_agg[:,1]), RMSE(correct[:,1], guess_agg[:,1]), Corr(correct[:,1], guess_agg[:,1])]
+        theta3 = [AVRB(correct[:,2], guess_agg[:,2]), RMSE(correct[:,2], guess_agg[:,2]), Corr(correct[:,2], guess_agg[:,2])]
+        df = pd.DataFrame({'Theta1': theta1, 'Theta2': theta2, 'Theta3':theta3,
+                           'Statistic': ['AVRB','RMSE','Corr'], 'Model': [model]*3})
+        return (df, guess_agg)
 
 
 ###############################################################################

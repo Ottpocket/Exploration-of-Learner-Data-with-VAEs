@@ -202,8 +202,9 @@ class Teaching_Vae:
                 logs['log_A'] = self.model.layers[index].get_weights()[0]
                 logs['B'] = self.model.layers[index].get_weights()[1]
                 logs['thetas'] = thetas_grabber(data[:,2:])
-
-        early_stopping = k.callbacks.EarlyStopping(monitor='val_loss', min_delta=10, 
+        
+        #min_delta used to be 0.
+        early_stopping = k.callbacks.EarlyStopping(monitor='val_loss', min_delta=0., 
                                                   patience=5, restore_best_weights = True)
         nanstop = tf.keras.callbacks.TerminateOnNaN()
         #Training the model
