@@ -214,8 +214,33 @@ class Teaching_Vae:
         
     def plot_model(self):
         return k.utils.plot_model(self.model, 'my_first_model.png',show_shapes=True)
-
-
+    
+    ###########################################################################
+    #Architecture_Rebuilding: a function that will specify what NN architectures
+    # will be used between the input layer and the stochastic layer. 
+    # To be tested with the Experiment Table Function.
+    #Input:
+    #   type_:   1) same as paper    Test->10->hidden
+    #           2) dropout          Test->10->Dropout(n%)-> hidden
+    #           3) 2 level%2 drop   Test-> test%2 -> Drop -> prev %2->Drop-> hidden
+    #           4) 3 level %2 drop  Test-> test%2 -> Drop -> prev %2->Drop->prev %2->Drop-> hidden
+    #   dropout_rate: fraction of inputs to drop in dropout layers.
+    #   num_questions: the number of questions for the test.
+    #Output:
+    #   out_layer: the the final layer 
+    ###########################################################################
+    def Architecture_Rebuilding(self, type_, prev, dropout_rate = 0.0, num_questions):
+        hidden2_num_neurons = np.ceil(num_questions / 2)
+        hidden3_num_neurons = np.ceil(hidden2_num_neurons / 2)
+        if type_ ==1:
+            out_layer = k.layers.Dense(10, name = 'Encoder_hidden', activation = 'sigmoid')(self.input_)
+        if type ==2:
+            hidden1 = k.layers.Dense(10, name = 'Encoder_hidden', activation = 'sigmoid')(self.input_)    
+            out_layer = k.layers.Dropout(rate = dropout_rate)(hidden)
+        if type ==3:
+            
+        if type ==4:
+            pass
 ###############################################################################
 #xent: gives the cross entropy betwen the predictions and their true values
 ###############################################################################
