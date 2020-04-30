@@ -57,11 +57,11 @@ def Corr(correct, guess, rm_zero = True):
     #arch_type: the type of architecture in the model.  an int from 0-3
     #dropout_rate: the percentage of neurons dropped by dropout
 #OUTPUTS:
-    #df_row: df with cols [students, tests, questions, dist, arch_type, dropout_rate, 
+    #df_row: df with cols [students, tests, questions, dist, arch_type, activations, dropout_rate, 
     #                      A_RMSE, A_Corr, Theta_RMSE, Theta_Corr, B_RMSE, B_Corr]
 ###############################################################################
 def Get_stats(H, qmat, amat, bvec, students, thetas, tests, questions, network_num, 
-              studtest, dist, arch_type, dropout_rate):
+              studtest, dist, arch_type, activations, dropout_rate):
     #H = history_dict
     #studtest = data.values[:,0:2]
     A_list = [np.exp(a) for a in H.history['log_A']]
@@ -69,7 +69,7 @@ def Get_stats(H, qmat, amat, bvec, students, thetas, tests, questions, network_n
     th = H.history['thetas']
     dfa, dfb = get_stats_over_time(A_list, B_list, amat, bvec, qmat, matrix= True)
     th_avrb, th_RMSE, th_Corr = get_theta_stats_v2(thetas, th[-1], studtest)
-    df_row = [students, tests, questions, dist, arch_type, dropout_rate, network_num, 
+    df_row = [students, tests, questions, dist, arch_type, activations, dropout_rate, network_num, 
               dfa['AVRB'][dfa.index[-1]], dfa['RMSE'][dfa.index[-1]],
               dfa['Corr'][dfa.index[-1]], dfb['AVRB'][dfb.index[-1]], dfb['RMSE'][dfb.index[-1]],
               dfb['Corr'][dfb.index[-1]], th_avrb, th_RMSE, th_Corr]

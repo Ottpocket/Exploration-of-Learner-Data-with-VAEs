@@ -161,7 +161,8 @@ def stochastic_layer(prev, dist, num_hidden = 3):
     #model: a keras model of the vae
 ###############################################################################
 class Teaching_Vae:
-    def __init__(self, dist, qmat, num_questions, architecture_type = 0, dropout_rate = 0.0):
+    def __init__(self, dist, qmat, num_questions, architecture_type = 0, 
+                 dropout_rate = 0.0, activation = 'sigmoid'):
         #constants
         self.qmat = qmat.astype('float32')
         class Qmat_semi_sigmoid(k.layers.Layer):    
