@@ -185,7 +185,8 @@ class Teaching_Vae:
         #Creating the model
         self.input_ = k.Input(shape = (num_questions,), name = 'Encoder_Input', dtype = 'float32')    
         #hidden1 = k.layers.Dense(10, name = 'Encoder_hidden', activation = 'sigmoid')(self.input_)
-        hidden1 = self.Architecture(layers = self.input_, dropout_rate = dropout_rate, type_ = architecture_type)
+        hidden1 = self.Architecture(layers = self.input_, dropout_rate = dropout_rate, 
+                                    type_ = architecture_type, activ = activation)
         loc, scale, self.theta = stochastic_layer(prev = hidden1, dist = dist)
         X_hat = Qmat_semi_sigmoid()(self.theta)
         self.model = k.Model(inputs = self.input_, outputs = X_hat)
