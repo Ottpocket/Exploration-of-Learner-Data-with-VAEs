@@ -160,7 +160,7 @@ def stochastic_layer(prev, dist, num_hidden = 3):
     #model: a keras model of the vae
 ###############################################################################
 class Teaching_Vae:
-    def __init__(self, dist, qmat, num_questions):
+    def __init__(self, dist, qmat, num_questions, architecture = 1):
         #constants
         self.qmat = qmat.astype('float32')
         class Qmat_semi_sigmoid(k.layers.Layer):    
@@ -216,7 +216,7 @@ class Teaching_Vae:
         return k.utils.plot_model(self.model, 'my_first_model.png',show_shapes=True)
     
     ###########################################################################
-    #Architecture_Rebuilding: a function that will specify what NN architectures
+    #Architecture: a function that will specify what NN architectures
     # will be used between the input layer and the stochastic layer. 
     # To be tested with the Experiment Table Function.
     #Input:
@@ -229,7 +229,7 @@ class Teaching_Vae:
     #Output:
     #   out_layer: the the final layer 
     ###########################################################################
-    def Architecture_Rebuilding(self, type_, prev, dropout_rate = 0.0, num_questions):
+    def Architecture(self, type_, prev, dropout_rate = 0.0, num_questions):
         hidden2_num_neurons = np.ceil(num_questions / 2)
         hidden3_num_neurons = np.ceil(hidden2_num_neurons / 2)
         if type_ ==1:
@@ -238,9 +238,18 @@ class Teaching_Vae:
             hidden1 = k.layers.Dense(10, name = 'Encoder_hidden', activation = 'sigmoid')(self.input_)    
             out_layer = k.layers.Dropout(rate = dropout_rate)(hidden)
         if type ==3:
-            
+            hidden1 = k.layers.Dense(hidden2_num_neurons)(prev)
+            drop_layer = k.layers.Dropout(rate = dropout_rate)(hidden1)
+            hidden2 = k.layers.Dense(hidden3_num_neurons)(drop_layer)
+            out_layer = k.layers.Dropout(rate = dropout_rate)(hidden2)
         if type ==4:
-            pass
+            hidden1 = k.layers.Dense(hidden2_num_neurons)(prev)
+            drop_layer = k.layers.Dropout(rate = dropout_rate)(hidden1)
+            hidden2 = k.layers.Dense(hidden3_num_neurons)(drop_layer)
+            drop_layer1 = k.layers.Dropout(rate = dropout_rate)(hidden2)
+            hidden3 = k.layers.Dense(hidden3_num_neurons)(drop_layer1)
+            out_layer = k.layers.Dropout(rate = dropout_rate)(hidden3)
+        return out_layer
 ###############################################################################
 #xent: gives the cross entropy betwen the predictions and their true values
 ###############################################################################
