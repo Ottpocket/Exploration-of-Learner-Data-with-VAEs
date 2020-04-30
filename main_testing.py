@@ -8,8 +8,11 @@ os.chdir("C:/Users/andre/Documents/GitHub/Exploration-of-Learner-Data-with-VAEs"
 from Teaching_Vae_Class import Teaching_Vae
 from Data_Gen import Create_data
 
+
 from Experiment_table_Function import  Experiment_table
-Experiment_table(num_students= [100], num_tests = [1], num_questions =[50], num_networks = 1, which_dists = ['norm'])
+df_raw, df_agg, dfa_list, dfb_list = Experiment_table(num_students= [10000], num_tests = [10], 
+                                                      num_questions =[28], num_networks = 10, which_dists = ['norm'],
+                                                      arches = [0], activations = ['sigmoid', 'relu'], dropouts = [0.0])
 
 
 #Creating the data for the network

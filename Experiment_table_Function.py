@@ -23,43 +23,42 @@ from Graphical_Functions import Get_stats
     #raw_df: a df with each neural network training as a row
     #agg_df: a df with each row as the average of the num_times a nn was ran
 ###############################################################################
-def Experiment_table(num_students, num_tests, num_questions, num_networks, which_dists):
+def Experiment_table(num_students, num_tests, num_questions, num_networks, 
+                     which_dists, arches = [0], activations = ['sigmoid'], dropouts = [.1]):
     df_list = []
     dfa_list = []
     dfb_list = []
-    col_names = ['students', 'tests', 'questions', 'dist', 'network_num', 'A_AVRB', 'A_RMSE', 'A_Corr', 
+    col_names = ['students', 'tests', 'questions', 'dist', 'Arch_type', 'dropout_rate','network_num', 'A_AVRB', 'A_RMSE', 'A_Corr', 
                  'B_AVRB', 'B_RMSE', 'B_Corr', 'th_avrb', 'th_RMSE', 'th_Corr']
     current_iteration=0
-    tot_iterations=len(num_students) * len(num_tests) * len(num_questions) * num_networks * len(which_dists)
+    tot_iterations=len(num_students) * len(num_tests) * len(num_questions) * num_networks * len(which_dists) * len(arches) * len(activations) * len(dropouts)
     for students in num_students:
         for tests in num_tests:
             for questions in num_questions:
                 for dist in which_dists:
                     for networks in range(num_networks):
-                    
-                        #just for testing
-                        if False:
-                            students = 1000
-                            tests = 5
-                            questions = 50
-                            dist = 'norm'
-                            networks = 1
-                        print('\nCreating data for network {} of {}'.format(current_iteration, tot_iterations))
-                        #create_data
-                        qmat, amat, bvec, thetas, data = Create_data(num_students = students, num_questions = questions, num_tests= tests, num_skills = 3)
-                        
-                        #create_network
-                        model = Teaching_Vae(dist = dist, qmat = qmat, num_questions = questions)
-                        #get the relevant stats from the trained network
-                        history_dict = model.train(data = data)
-                        dfa, dfb, df_row = Get_stats(H = history_dict, qmat = qmat, amat = amat, 
-                                           bvec = bvec, students = students, thetas = thetas, tests = tests,
-                                           questions = questions, network_num = networks, dist = dist,
-                                           studtest = data[:,0:2])
-                        df_list.append(df_row)
-                        dfa_list.append(dfa)
-                        dfb_list.append(dfb)
-                        current_iteration = current_iteration + 1
+                        for arch in arches:
+                            for activation in activations:
+                                for dropout in dropouts:
+                                    
+                                    print('\nCreating data for network {} of {}'.format(current_iteration, tot_iterations))
+                                    #create_data
+                                    qmat, amat, bvec, thetas, data = Create_data(num_students = students, num_questions = questions, num_tests= tests, num_skills = 3)
+                                    
+                                    #create_network
+                                    model = Teaching_Vae(dist = dist, qmat = qmat, num_questions = questions,
+                                                         architecture_type = arch, dropout_rate = dropout)
+                                    
+                                    #get the relevant stats from the trained network
+                                    history_dict = model.train(data = data)
+                                    dfa, dfb, df_row = Get_stats(H = history_dict, qmat = qmat, amat = amat, 
+                                                       bvec = bvec, students = students, thetas = thetas, tests = tests,
+                                                       questions = questions, network_num = networks, dist = dist,
+                                                       studtest = data[:,0:2], arch_type = arch, dropout_rate = dropout)
+                                    df_list.append(df_row)
+                                    dfa_list.append(dfa)
+                                    dfb_list.append(dfb)
+                                    current_iteration = current_iteration + 1
                         
     df_raw = pd.DataFrame(df_list, columns = col_names)
     df_agg = df_raw.groupby(['students','tests','questions', 'dist']).agg({'A_AVRB':'mean', 
