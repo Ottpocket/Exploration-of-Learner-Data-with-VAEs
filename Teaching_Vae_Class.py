@@ -79,7 +79,6 @@ def add_vae_loss(model, loc, scale, dist):
 ###############################################################################
 def stochastic_layer(prev, dist, num_hidden = 3):
     assert prev.shape[0] is None
-    assert prev.shape[1] == 10
     #for ae layer
     if dist == 'None':
         loc = tf.Variable([0], trainable = False)#dne
@@ -156,11 +155,13 @@ def stochastic_layer(prev, dist, num_hidden = 3):
     #dist: the hidden distribution of the vae
     #qmat: the qmatrix
     #num_questions: # of questions in each test
+    #architecture_type: which architecture to use before the stochastic layer
+    #dropout_rate: how much dropout in the layer specified by architecture
 #OUTPUTS:
     #model: a keras model of the vae
 ###############################################################################
 class Teaching_Vae:
-    def __init__(self, dist, qmat, num_questions, architecture = 1):
+    def __init__(self, dist, qmat, num_questions, architecture_type = 0, dropout_rate = 0.0):
         #constants
         self.qmat = qmat.astype('float32')
         class Qmat_semi_sigmoid(k.layers.Layer):    
@@ -182,7 +183,8 @@ class Teaching_Vae:
         
         #Creating the model
         self.input_ = k.Input(shape = (num_questions,), name = 'Encoder_Input', dtype = 'float32')    
-        hidden1 = k.layers.Dense(10, name = 'Encoder_hidden', activation = 'sigmoid')(self.input_)
+        #hidden1 = k.layers.Dense(10, name = 'Encoder_hidden', activation = 'sigmoid')(self.input_)
+        hidden1 = self.Architecture(layers = self.input_, dropout_rate = dropout_rate, type_ = architecture_type)
         loc, scale, self.theta = stochastic_layer(prev = hidden1, dist = dist)
         X_hat = Qmat_semi_sigmoid()(self.theta)
         self.model = k.Model(inputs = self.input_, outputs = X_hat)
@@ -204,7 +206,7 @@ class Teaching_Vae:
                 logs['thetas'] = thetas_grabber(data[:,2:])
         
         #min_delta used to be 0.
-        early_stopping = k.callbacks.EarlyStopping(monitor='val_loss', min_delta=0., 
+        early_stopping = k.callbacks.EarlyStopping(monitor='val_loss', min_delta=10., 
                                                   patience=5, restore_best_weights = True)
         nanstop = tf.keras.callbacks.TerminateOnNaN()
         #Training the model
@@ -220,36 +222,32 @@ class Teaching_Vae:
     # will be used between the input layer and the stochastic layer. 
     # To be tested with the Experiment Table Function.
     #Input:
-    #   type_:   1) same as paper    Test->10->hidden
-    #           2) dropout          Test->10->Dropout(n%)-> hidden
-    #           3) 2 level%2 drop   Test-> test%2 -> Drop -> prev %2->Drop-> hidden
-    #           4) 3 level %2 drop  Test-> test%2 -> Drop -> prev %2->Drop->prev %2->Drop-> hidden
+    #   layers: the previous layer of the NN   
     #   dropout_rate: fraction of inputs to drop in dropout layers.
-    #   num_questions: the number of questions for the test.
+    #   type_:   0) same as paper    Test->10->hidden
+    #           1) dropout          Test->10->Dropout(n%)-> hidden
+    #           2) 2 level%2 drop   Test-> test%2 -> Drop -> prev %2->Drop-> hidden
+    #           3) 3 level %2 drop  Test-> test%2 -> Drop -> prev %2->Drop->prev %2->Drop-> hidden
+    #   activ: the activation.  The paper used the 'sigmoid'.  
     #Output:
-    #   out_layer: the the final layer 
+    #   layera: the completed middle layers
     ###########################################################################
-    def Architecture(self, type_, prev, dropout_rate = 0.0, num_questions):
-        hidden2_num_neurons = np.ceil(num_questions / 2)
-        hidden3_num_neurons = np.ceil(hidden2_num_neurons / 2)
+    def Architecture(self, layers, dropout_rate = 0.0, type_ = 0, activ = 'sigmoid'):
+        num_questions = layers.shape[1]
+        hidden_neurons = np.ceil(num_questions / 2)
+        if type_ ==0:
+            layers = k.layers.Dense(10, name = 'Encoder_hidden_1', activation = activ)(layers)
         if type_ ==1:
-            out_layer = k.layers.Dense(10, name = 'Encoder_hidden', activation = 'sigmoid')(self.input_)
-        if type ==2:
-            hidden1 = k.layers.Dense(10, name = 'Encoder_hidden', activation = 'sigmoid')(self.input_)    
-            out_layer = k.layers.Dropout(rate = dropout_rate)(hidden)
-        if type ==3:
-            hidden1 = k.layers.Dense(hidden2_num_neurons)(prev)
-            drop_layer = k.layers.Dropout(rate = dropout_rate)(hidden1)
-            hidden2 = k.layers.Dense(hidden3_num_neurons)(drop_layer)
-            out_layer = k.layers.Dropout(rate = dropout_rate)(hidden2)
-        if type ==4:
-            hidden1 = k.layers.Dense(hidden2_num_neurons)(prev)
-            drop_layer = k.layers.Dropout(rate = dropout_rate)(hidden1)
-            hidden2 = k.layers.Dense(hidden3_num_neurons)(drop_layer)
-            drop_layer1 = k.layers.Dropout(rate = dropout_rate)(hidden2)
-            hidden3 = k.layers.Dense(hidden3_num_neurons)(drop_layer1)
-            out_layer = k.layers.Dropout(rate = dropout_rate)(hidden3)
-        return out_layer
+            layers = k.layers.Dense(10, name = 'Encoder_hidden_1', activation = activ)(layers)    
+            layers = k.layers.BatchNormalization(name = 'Batch_Norm_1')(layers)
+            layers = k.layers.Dropout(rate = dropout_rate, name = 'Dropout_1')(layers)
+        else:
+            for i in range(type_):
+                layers = k.layers.Dense(hidden_neurons, name = 'Encoder_hidden_{}'.format(i), activation = activ)(layers) 
+                layers = k.layers.BatchNormalization(name = 'Batch_Norm_{}'.format(i))(layers)
+                layers = k.layers.Dropout(rate = dropout_rate, name = 'Dropout_{}'.format(i))(layers)
+                hidden_neurons = np.ceil(hidden_neurons / 2)
+        return layers
 ###############################################################################
 #xent: gives the cross entropy betwen the predictions and their true values
 ###############################################################################

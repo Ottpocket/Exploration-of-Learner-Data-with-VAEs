@@ -26,9 +26,12 @@ Q_mat, A, B, theta, data = Create_data(num_students = num_students, num_question
 input_dat = [Q_mat, A, B, theta, data]
 
 #Training VAE
-vae = Teaching_Vae(dist = 'norm', qmat = Q_mat, num_questions = num_questions)
+from Teaching_Vae_Class import Teaching_Vae
+vae = Teaching_Vae(dist = 'norm', qmat = Q_mat, num_questions = num_questions,  
+                   dropout_rate = 0.1, architecture_type = 2)
+vae.plot_model()
 H_vae = vae.train(data)
-get_stats_over_time([], [], A, B, Q_mat, matrix = False, H = H_vae)
+a_1_df, a_2_df, a_3_df, b_df = get_stats_over_time([], [], A, B, Q_mat, matrix = False, H = H_vae)
 
 #Training AE
 ae = Teaching_Vae(dist = 'None', qmat = Q_mat, num_questions = num_questions)
