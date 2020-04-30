@@ -13,6 +13,12 @@ from Experiment_table_Function import  Experiment_table
 df_raw, df_agg, dfa_list, dfb_list = Experiment_table(num_students= [10000], num_tests = [10], 
                                                       num_questions =[28], num_networks = 10, which_dists = ['norm'],
                                                       arches = [0], activations = ['sigmoid', 'relu'], dropouts = [0.0])
+df_raw, df_agg, dfa_list, dfb_list = Experiment_table(num_students= [10000], num_tests = [10], 
+                                                      num_questions =[28], num_networks = 10, which_dists = ['norm'],
+                                                      arches = [0], activations = ['sigmoid', 'relu'], dropouts = [0.0])
+agre = df_raw.groupby('activations').agg('mean')
+
+agre = df_raw.groupby('activations').agg({'mean','std'})
 
 
 #Creating the data for the network

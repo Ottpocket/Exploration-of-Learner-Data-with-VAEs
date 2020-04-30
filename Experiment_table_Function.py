@@ -47,7 +47,8 @@ def Experiment_table(num_students, num_tests, num_questions, num_networks,
                                     
                                     #create_network
                                     model = Teaching_Vae(dist = dist, qmat = qmat, num_questions = questions,
-                                                         architecture_type = arch, dropout_rate = dropout)
+                                                         architecture_type = arch, activation = activation, 
+                                                         dropout_rate = dropout)
                                     
                                     #get the relevant stats from the trained network
                                     history_dict = model.train(data = data)
@@ -55,7 +56,7 @@ def Experiment_table(num_students, num_tests, num_questions, num_networks,
                                                        bvec = bvec, students = students, thetas = thetas, tests = tests,
                                                        questions = questions, network_num = networks, dist = dist,
                                                        studtest = data[:,0:2], arch_type = arch, 
-                                                       activations = activation, dropout_rate = dropout)
+                                                       activation = activation, dropout_rate = dropout)
                                     df_list.append(df_row)
                                     dfa_list.append(dfa)
                                     dfb_list.append(dfb)
