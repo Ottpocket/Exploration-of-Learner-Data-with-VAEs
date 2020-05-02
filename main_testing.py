@@ -7,18 +7,20 @@ import os
 os.chdir("C:/Users/andre/Documents/GitHub/Exploration-of-Learner-Data-with-VAEs")
 from Teaching_Vae_Class import Teaching_Vae
 from Data_Gen import Create_data
+from Experiment_table_Function import Experiment_table
 
-
-from Experiment_table_Function import  Experiment_table
+###############################################################################
+#Super Big Architecture Test for NNs.  Here I will test:
+# 1) Do different activations have stronger correlation with targets? 
+# 2) Do different layers of NNs have stronger baseline performance?
+# 3) What is the optimal dropout for the models to improve?
+###############################################################################
 df_raw, df_agg, dfa_list, dfb_list = Experiment_table(num_students= [10000], num_tests = [10], 
                                                       num_questions =[28], num_networks = 10, which_dists = ['norm'],
                                                       arches = [0], activations = ['sigmoid', 'relu'], dropouts = [0.0])
-df_raw, df_agg, dfa_list, dfb_list = Experiment_table(num_students= [10000], num_tests = [10], 
-                                                      num_questions =[28], num_networks = 10, which_dists = ['norm'],
-                                                      arches = [0], activations = ['sigmoid', 'relu'], dropouts = [0.0])
-agre = df_raw.groupby('activations').agg('mean')
-
-agre = df_raw.groupby('activations').agg({'mean','std'})
+df_raw, df_agg, dfa_list, dfb_list = Experiment_table(num_students= [1000, 5000, 10000], num_tests = [1,10], 
+                                                      num_questions =[30,50,100], num_networks = 5, which_dists = ['norm'],
+                                                      arches = [1,2,3], activations = ['sigmoid', 'relu'], dropouts = [0.0,0.1,0.2])
 
 
 #Creating the data for the network
