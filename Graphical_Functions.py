@@ -72,7 +72,7 @@ def Get_stats(H, qmat, amat, bvec, students, thetas, tests, questions, network_n
     df_row = [students, tests, questions, dist, arch_type, activation, dropout_rate, network_num, 
               dfa['AVRB'][dfa.index[-1]], dfa['RMSE'][dfa.index[-1]],
               dfa['Corr'][dfa.index[-1]], dfb['AVRB'][dfb.index[-1]], dfb['RMSE'][dfb.index[-1]],
-              dfb['Corr'][dfb.index[-1]], th_avrb, th_RMSE, th_Corr]
+              dfb['Corr'][dfb.index[-1]], th_avrb, th_RMSE, th_Corr,len(H.history['B']) ]
     return (dfa, dfb, df_row)
 
 
