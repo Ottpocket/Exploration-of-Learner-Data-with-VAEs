@@ -7,6 +7,7 @@ Created on Thu Apr 23 10:36:59 2020
 import pandas as pd
 import os
 os.chdir("C:/Users/andre/Documents/GitHub/Exploration-of-Learner-Data-with-VAEs")
+from time import time
 from Data_Gen import Create_data
 from Teaching_Vae_Class import Teaching_Vae
 from Graphical_Functions import Get_stats
@@ -30,7 +31,7 @@ def Experiment_table(num_students, num_tests, num_questions, num_networks,
     dfb_list = []
     col_names = ['students', 'tests', 'questions', 'dist', 'Arch_type', 'activations', 'dropout_rate','network_num', 'A_AVRB', 'A_RMSE', 'A_Corr', 
                  'B_AVRB', 'B_RMSE', 'B_Corr', 'th_avrb', 'th_RMSE', 'th_Corr', 'epochs']
-    current_iteration=0
+    current_iteration=1
     tot_iterations=len(num_students) * len(num_tests) * len(num_questions) * num_networks * len(which_dists) * len(arches) * len(activations) * len(dropouts)
     for students in num_students:
         for tests in num_tests:
@@ -40,24 +41,27 @@ def Experiment_table(num_students, num_tests, num_questions, num_networks,
                         for arch in arches:
                             for activation in activations:
                                 for dropout in dropouts:
-                                    
+                                    start = time()
                                     print('\nCreating data for network {} of {}'.format(current_iteration, tot_iterations))
+                                    print('Network params: stud: {}, tests: {}, questions: {}, dist: {}, network: {}, arch: {}, activation: {}, dropout: {}'.format(students, tests, questions, dist, networks, arch, activation, dropout))
                                     #create_data
                                     qmat, amat, bvec, thetas, data = Create_data(num_students = students, num_questions = questions, num_tests= tests, num_skills = 3)
-                                    
+                                    data_time = time() - start
                                     #create_network
                                     model = Teaching_Vae(dist = dist, qmat = qmat, num_questions = questions,
                                                          architecture_type = arch, activation = activation, 
                                                          dropout_rate = dropout)
                                     
                                     #get the relevant stats from the trained network
+                                    print('Training network {} of {}'.format(current_iteration, tot_iterations))
                                     history_dict = model.train(data = data)
+                                    train_time = time() - data_time - start
                                     dfa, dfb, df_row = Get_stats(H = history_dict, qmat = qmat, amat = amat, 
                                                        bvec = bvec, students = students, thetas = thetas, tests = tests,
                                                        questions = questions, network_num = networks, dist = dist,
                                                        studtest = data[:,0:2], arch_type = arch, 
                                                        activation = activation, dropout_rate = dropout)
-                                    
+                                    print('Data Gen: {}, Training: {}, total: {}'.format(data_time, train_time, data_time + train_time ))
                                     #if it did not return garabage due to early stopping too soon
                                     if isinstance(dfa, pd.DataFrame):
                                         df_list.append(df_row)
