@@ -1,7 +1,12 @@
 # Exploration of Learner Data with VAEs
-Replication and Extensions to Autoencoders for Educational Assessment
+Given student test scores, can you know with granularity what a student knows?  If a student scores an 65 on a trig test, does the student not understand the trigonometry, or just the algebra?  "Autoencoders for Educational Assessment" by Converse, et al., found a way to automate the process using Variational Autoencoders.  Through integrating the variational autoencoder with some outside information, the authors were able to obtrain strong estimates for ground truth student knowledge.  Moreover, they were able to uncover exactly how the tests themselves were formed were great precision.  
 
-Abstract:  The author has 1) replicated the findings of “Autoencoders for Educational Assessment,” 2) created a function to test different a) data and b) architectural assumptions for the VAE than those provided by the paper, 3) written additional hidden distribution to test, and 4) written a multilevel vae for testing subject where knowledge of one subject affects knowledge of another.  
+This github repository is devoted to reproducing the findings of "Autoencoders for Educational Assessment" and extending the research of the paper.  As many additional questions can be asked about using VAEs for uncovering latent student knowledge, I will cover many of the questions in the following sections.  
+
+Replication of the Study
+I used Tensorflow to recreate the code of the paper.  
+
+The author has 1) replicated the findings of “Autoencoders for Educational Assessment,” 2) created a function to test different a) data and b) architectural assumptions for the VAE than those provided by the paper, 3) written additional hidden distribution to test, and 4) written a multilevel vae for testing subject where knowledge of one subject affects knowledge of another.  
 
 Introduction
 Autoencoders for Educational Assessment showed the viability of using VAEs to uncover the student understanding in item response theory models.  The hidden knowledge of students highly correlated to the true hidden knowledge that was simulated.  Additionally, the VAE was able to estimate facts about the composition of the test itself with high correlation to the ground truth.  
