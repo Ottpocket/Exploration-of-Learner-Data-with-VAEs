@@ -31,7 +31,7 @@ def Experiment_table(num_students, num_tests, num_questions, num_networks,
     dfb_list = []
     col_names = ['students', 'tests', 'questions', 'dist', 'Arch_type', 'activations', 'dropout_rate','network_num', 'A_AVRB', 'A_RMSE', 'A_Corr', 
                  'B_AVRB', 'B_RMSE', 'B_Corr', 'th_avrb', 'th_RMSE', 'th_Corr', 'epochs']
-    current_iteration=1
+    current_iteration=1 
     tot_iterations=len(num_students) * len(num_tests) * len(num_questions) * num_networks * len(which_dists) * len(arches) * len(activations) * len(dropouts)
     for students in num_students:
         for tests in num_tests:
