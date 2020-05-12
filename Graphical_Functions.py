@@ -62,11 +62,14 @@ def Corr(correct, guess, rm_zero = True):
 ###############################################################################
 def Get_stats(H, qmat, amat, bvec, students, thetas, tests, questions, network_num, 
               studtest, dist, arch_type, activation, dropout_rate):
-    #H = history_dict
-    #studtest = data.values[:,0:2]
-    A_list = [np.exp(a) for a in H.history['log_A']][0:-3] #the last subscript to get best val in earlystopped training
-    B_list = H.history['B'][0:-3]
-    th = H.history['thetas'][0:-3]
+    
+    #return 0s for early stopping as flags to not add row
+    if len(H.history['B']) <=4:
+        return (0, 0, 0)
+    
+    A_list = [np.exp(a) for a in H.history['log_A']][0:-1] #the last subscript to get best val in earlystopped training
+    B_list = H.history['B'][0:-1]
+    th = H.history['thetas'][0:-1]
     dfa, dfb = get_stats_over_time(A_list, B_list, amat, bvec, qmat, matrix= True)
     th_avrb, th_RMSE, th_Corr = get_theta_stats_v2(thetas, th[-1], studtest)
     df_row = [students, tests, questions, dist, arch_type, activation, dropout_rate, network_num, 

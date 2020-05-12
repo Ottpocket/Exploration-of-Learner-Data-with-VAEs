@@ -57,9 +57,12 @@ def Experiment_table(num_students, num_tests, num_questions, num_networks,
                                                        questions = questions, network_num = networks, dist = dist,
                                                        studtest = data[:,0:2], arch_type = arch, 
                                                        activation = activation, dropout_rate = dropout)
-                                    df_list.append(df_row)
-                                    dfa_list.append(dfa)
-                                    dfb_list.append(dfb)
+                                    
+                                    #if it did not return garabage due to early stopping too soon
+                                    if isinstance(dfa, pd.DataFrame):
+                                        df_list.append(df_row)
+                                        dfa_list.append(dfa)
+                                        dfb_list.append(dfb)
                                     current_iteration = current_iteration + 1
                         
     df_raw = pd.DataFrame(df_list, columns = col_names)
