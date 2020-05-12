@@ -15,11 +15,11 @@ from Experiment_table_Function import Experiment_table
 # 2) Do different layers of NNs have stronger baseline performance?
 # 3) What is the optimal dropout for the models to improve?
 ###############################################################################
-df_raw, df_agg, dfa_list, dfb_list = Experiment_table(num_students= [10000], num_tests = [10], 
-                                                      num_questions =[28], num_networks = 10, which_dists = ['norm'],
-                                                      arches = [0], activations = ['sigmoid', 'relu'], dropouts = [0.0])
+df_raw, df_agg, dfa_list, dfb_list = Experiment_table(num_students= [100], num_tests = [10], 
+                                                      num_questions =[28], num_networks = 20, which_dists = ['norm'],
+                                                      arches = [2], activations = ['sigmoid', 'relu'], dropouts = [0.3])
 df_raw, df_agg, dfa_list, dfb_list = Experiment_table(num_students= [1000, 5000, 10000], num_tests = [1,10], 
-                                                      num_questions =[30,50,100], num_networks = 5, which_dists = ['norm'],
+                                                      num_questions =[30,50], num_networks = 5, which_dists = ['norm','laplace'],
                                                       arches = [1,2,3], activations = ['sigmoid', 'relu'], dropouts = [0.0,0.1,0.2])
 
 
@@ -40,6 +40,7 @@ vae = Teaching_Vae(dist = 'norm', qmat = Q_mat, num_questions = num_questions,
                    dropout_rate = 0.1, architecture_type = 2)
 vae.plot_model()
 H_vae = vae.train(data)
+H_vae.history.keys()
 a_1_df, a_2_df, a_3_df, b_df = get_stats_over_time([], [], A, B, Q_mat, matrix = False, H = H_vae)
 
 #Training AE
