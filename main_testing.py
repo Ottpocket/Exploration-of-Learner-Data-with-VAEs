@@ -3,6 +3,7 @@
 Main:  Playground for testing implemented functions
 @author: andre
 """
+import pandas as pd
 import os
 os.chdir("C:/Users/andre/Documents/GitHub/Exploration-of-Learner-Data-with-VAEs")
 from Teaching_Vae_Class import Teaching_Vae
@@ -22,6 +23,18 @@ df_raw, df_agg, dfa_list, dfb_list = Experiment_table(num_students= [1000, 5000,
                                                       num_questions =[30,50], num_networks = 5, which_dists = ['norm','laplace'],
                                                       arches = [1,2,3], activations = ['sigmoid', 'relu'], dropouts = [0.0,0.1,0.2])
 
+raw = pd.read_csv('raw_testing.csv')
+ag = raw.groupby(['students','tests','questions', 'Arch_type','dropout_rate']).agg({'th_Corr':{'mean','count'}, 'epochs':{'min','mean'}})
+#Test of data
+import seaborn as sns
+sns.set(style="whitegrid")
+plt.savefig()
+raw['questions_tests'] = raw['questions'].apply(str)+'_' +raw['tests'].apply(str)
+raw['drop_arch'] = raw['dropout_rate'].apply(str)+'_' +raw['Arch_type'].apply(str)  
+g = sns.catplot(x='questions_tests', y='th_Corr', hue= 'drop_arch', data = raw,
+                height=6, aspect = 3, kind='bar', palette='muted')
+g.set_ylabels("Correlation")
+g.savefig('JibberJabber.png')
 
 #Creating the data for the network
 num_students = 10000
