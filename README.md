@@ -10,6 +10,13 @@ The first table of the paper illustrated the difference in parameter recovery be
 <img src="Images/Table_1.PNG" height = 200>
 
 Clearly, a variational autoencoder recovers the parameters of the test better than an autoencoder.  
+
+The second table shows a VAE and an AE recovering the students' knowledge of a subject.
+
+<img src="Images/Table_2.PNG" height = 200>
+
+While the VAE has less error in terms of AVRB and RMSE, the AE correlates between with the student knowledge.  
+
 ## Extensions 
 The paper left room for many additional questions to be asked about the capabilities of VAEs for student assessment.  I looked at the following:
 1. Which architectures can best extract the learner data? 
@@ -18,6 +25,7 @@ The paper left room for many additional questions to be asked about the capabili
 1. How do VAEs perform with different amounts of learner data?
 1. Do some hidden distributions work better than others?
 
+I have tentative answers for the first question.  
 ## Future Work
 
 
