@@ -28,6 +28,7 @@ raw = pd.read_csv('raw_testing.csv')
 ag = raw.groupby(['students','tests','questions', 'Arch_type','dropout_rate']).agg({'th_Corr':{'mean','count'}, 'epochs':{'min','mean'}})
 #Test of data
 import seaborn as sns
+import matplotlib.pyplot as plt
 sns.set(style="whitegrid")
 plt.savefig()
 raw['questions_tests'] = raw['questions'].apply(str)+'_' +raw['tests'].apply(str)
@@ -38,23 +39,31 @@ g.set_ylabels("Correlation")
 g.savefig('JibberJabber.png')
 
 
-
+###############################################################################
+#Plot of fig3
+###############################################################################
 import seaborn as sns
 import matplotlib.pyplot as plt
+sns.set_color_codes("colorblind")
+from scipy.stats import pearsonr
 from Replication_main import Replication_of_Paper_Figures
 tab1, fig3, fig4, tab2, fig5, vae, ae, data_list = Replication_of_Paper_Figures()
 
-fig, ax =plt.subplots(1,2)
-sns.scatterplot(x = 'True_Values',y= 'Estimates_ae',  ax=ax[0], data = fig3[fig3['A_i']==2]).set_title('AE Parameter Recovery')
-sns.scatterplot(x = 'True_Values',y= 'Estimates_vae', ax=ax[1], data= fig3[fig3['A_i']==2]).set_title('VAE Parameter Recovery')
+fig, ax =plt.subplots(nrows = 1, ncols = 2, figsize = (15, 5))
+sns.scatterplot(x = 'True_Values',y= 'Estimates_ae',  ax=ax[0], hue = 'skill_num', 
+                palette = 'colorblind', data = fig3).set_title('AE Parameter Recovery')
+sns.scatterplot(x = 'True_Values',y= 'Estimates_vae', ax=ax[1], hue = 'skill_num', 
+                palette = 'colorblind', data= fig3).set_title('VAE Parameter Recovery')
 ax[0].set_ylim([0.0,4])
 ax[1].set_ylim([0.0,4])
 fig.show()
+fig.savefig('Parameter Recovery.png')
+
+pearsonr(fig3[fig3['A_i']==2].True_Values, fig3[fig3['A_i']==2].Estimates_vae)[0]
+
 
 fig3.groupby('A_i').agg({'Estimates_ae':'count'})
 fig, ax = plt.subplots(3, 2, sharex='col', sharey='row')
 
 
-H_ae.history['log_A'][-1]
-np.reshape(H_ae.history['log_A'][-1], [-1])
 
