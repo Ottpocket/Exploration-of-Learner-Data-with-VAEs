@@ -232,7 +232,7 @@ class Teaching_Vae:
     #           3) 3 level %2 drop  Test-> test%2 -> Drop -> prev %2->Drop->prev %2->Drop-> hidden
     #   activ: the activation.  The paper used the 'sigmoid'.  
     #Output:
-    #   layera: the completed middle layers
+    #   layers: the completed middle layers
     ###########################################################################
     def Architecture(self, layers, dropout_rate = 0.0, type_ = 0, activ = 'sigmoid'):
         num_questions = layers.shape[1]
