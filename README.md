@@ -9,7 +9,12 @@ The first table of the paper illustrated the difference in parameter recovery be
 
 <img src="Images/Table_1.PNG" height = 200>
 
-Clearly, a variational autoencoder recovers the parameters of the test better than an autoencoder.  
+Clearly, a variational autoencoder recovers the parameters of the test better than an autoencoder.  This can be seen visually
+from a plot of the recreations of the VAE and AE of the test data.
+
+<img src="Images/Parameter%20Recovery.png" height = 200>
+
+It is clear that the VAE much more clearly correlates with the unobserved ground truth used to create the test.  
 
 The second table shows a VAE and an AE recovering the students' knowledge of a subject.
 
