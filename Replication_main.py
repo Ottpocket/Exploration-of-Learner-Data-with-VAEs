@@ -71,9 +71,24 @@ def Replication_of_Paper_Figures(Input_data = None, num_students = 10000,
     tab1 = pd.concat([tab1_vae,tab1_ae])
     tab1 = tab1.groupby(['Statistic','Model']).agg('mean').reset_index()
     
-    fig3 = pd.DataFrame({'True_Values': np.reshape(A,[-1,]), 
-                         'Estimates_ae': np.reshape(np.exp(H_ae.history['log_A'][-1]), [-1]),
-                         'Estimates_vae': np.reshape(np.exp(H_vae.history['log_A'][-1]), [-1])})
+    #Indicating which skill is used
+    skill=[]
+    for i in range(A.shape[0]):
+        for j in range(A.shape[1]):
+            skill.append(i)
+    skill = np.array(skill)[np.where(np.reshape(Q_mat, [-1])==1)[0]]
+    
+    #Getting rid of a_i,j which were masked by the Q matrix
+    A_qmat= np.reshape(A * Q_mat, [-1,])
+    A = np.delete(A_qmat, np.where(A_qmat == 0))
+    A_ae = np.reshape(Q_mat * np.exp(H_ae.history['log_A'][-1]), [-1])
+    A_ae = np.delete(A_ae, np.where(A_ae == 0))
+    A_vae= np.reshape(Q_mat * np.exp(H_vae.history['log_A'][-1]), [-1])
+    A_vae = np.delete(A_vae, np.where(A_vae==0))
+    fig3 = pd.DataFrame({'True_Values': A, 
+                         'Estimates_ae': A_ae,
+                         'Estimates_vae': A_vae,
+                         'skill_num': skill })
     
     fig4 = pd.DataFrame({'True_Values': np.reshape(B,[-1]),
                          'Estimates_ae': H_ae.history['B'][-1],

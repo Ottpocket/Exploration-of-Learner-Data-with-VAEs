@@ -45,44 +45,16 @@ from Replication_main import Replication_of_Paper_Figures
 tab1, fig3, fig4, tab2, fig5, vae, ae, data_list = Replication_of_Paper_Figures()
 
 fig, ax =plt.subplots(1,2)
-sns.scatterplot(x = 'True_Values',y= 'Estimates_ae',  ax=ax[0], data = fig3).set_title('AE Parameter Recovery')
-sns.scatterplot(x = 'True_Values',y= 'Estimates_vae', ax=ax[1], data= fig3).set_title('VAE Parameter Recovery')
+sns.scatterplot(x = 'True_Values',y= 'Estimates_ae',  ax=ax[0], data = fig3[fig3['A_i']==2]).set_title('AE Parameter Recovery')
+sns.scatterplot(x = 'True_Values',y= 'Estimates_vae', ax=ax[1], data= fig3[fig3['A_i']==2]).set_title('VAE Parameter Recovery')
 ax[0].set_ylim([0.0,4])
 ax[1].set_ylim([0.0,4])
 fig.show()
 
-
-fig3.Estimates_vae.count()
-fig3.Estimates_ae.count()
-
-tab2['Statistic'] = ['AVRB','AVRB','Corr','Corr','RMSE','RMSE']
-tab2['Model'] = ['VAE','AE','VAE','AE','VAE','AE']
-
-#Creating the data for the network
-num_students = 10000
-num_questions = 28
-num_tests = 10
-num_skills = 3
-dist = 'norm'
-#Getting data for NNs
-Q_mat, A, B, theta, data = Create_data(num_students = num_students, num_questions = num_questions,
-                                    num_tests = num_tests, num_skills = num_skills)
-input_dat = [Q_mat, A, B, theta, data]
-
-#Training VAE
-from Teaching_Vae_Class import Teaching_Vae
-vae = Teaching_Vae(dist = 'norm', qmat = Q_mat, num_questions = num_questions,  
-                   dropout_rate = 0.1, architecture_type = 2)
-vae.plot_model()
-H_vae = vae.train(data)
-H_vae.history.keys()
-a_1_df, a_2_df, a_3_df, b_df = get_stats_over_time([], [], A, B, Q_mat, matrix = False, H = H_vae)
-
-#Training AE
-ae = Teaching_Vae(dist = 'None', qmat = Q_mat, num_questions = num_questions)
-H_ae = vae.train(data)
-get_stats_over_time([], [], A, B, Q_mat, matrix = False, H = H_ae)
+fig3.groupby('A_i').agg({'Estimates_ae':'count'})
+fig, ax = plt.subplots(3, 2, sharex='col', sharey='row')
 
 
-#Replicating the Figures from the paper
-tab1, fig3, fig4, tab2, fig5, vae, ae, _ = Replication_of_Paper_Figures(input_dat, vae = vae, ae = ae)
+H_ae.history['log_A'][-1]
+np.reshape(H_ae.history['log_A'][-1], [-1])
+
