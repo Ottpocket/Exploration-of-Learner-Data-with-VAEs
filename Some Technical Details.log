@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7350 64-bit) (preloaded format=pdflatex 2020.3.23)  13 MAY 2020 09:32
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7350 64-bit) (preloaded format=pdflatex 2020.3.23)  13 MAY 2020 09:33
 entering extended mode
 **"./Some Technical Details.tex"
 ("Some Technical Details.tex"
@@ -309,7 +309,7 @@ Here is how much of TeX's memory you used:
  18282 multiletter control sequences out of 15000+200000
  540239 words of font info for 55 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 30i,9n,31p,784b,236s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 30i,9n,31p,784b,234s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Users/andre/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts
 /cm/cmbx12.pfb><C:/Users/andre/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/pu
 blic/amsfonts/cm/cmex10.pfb><C:/Users/andre/AppData/Local/Programs/MiKTeX 2.9/f
@@ -326,7 +326,7 @@ ams/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/andre/AppDat
 a/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/
 andre/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.p
 fb>
-Output written on "Some Technical Details.pdf" (8 pages, 369445 bytes).
+Output written on "Some Technical Details.pdf" (8 pages, 369818 bytes).
 PDF statistics:
  84 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
