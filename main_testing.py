@@ -40,9 +40,9 @@ df_raw, _,_,_ = Experiment_table(num_students= [10000], num_tests = [10],
                                  dropouts = [0.0])
 
 df_raw.to_csv('arch_testing.csv')
-raw = pd.read_csv('./Experiment_Data/arch_testing.csv')
+raw = pd.read_csv('./Experiment_Data/arch_testing_big.csv')
 arch = raw[(raw['students']==10000) & (raw['tests']==10) & (raw['questions']==30) & (raw['dropout_rate'] ==0.0)]
-arch.groupby('Arch_type').agg({'th_Corr':{'mean','std'}})
+raw.groupby('Arch_type').agg({'th_Corr':{'mean','std'}})
 raw['questions_tests'] = raw['questions'].apply(str)+'_' +raw['tests'].apply(str)
 raw['drop_arch'] = raw['dropout_rate'].apply(str)+'_' +raw['Arch_type'].apply(str)  
 g = sns.catplot(x='questions_tests', y='th_Corr', hue= 'drop_arch', data = raw,
@@ -58,7 +58,7 @@ g.set_ylabels("Correlation")
 df_raw,_,_,_ = Experiment_table(num_students= [10000], num_tests = [10], num_questions =[28], 
                                 num_networks = 20, which_dists = ['norm'],
                                 arches = [1,2,3], activations = ['relu'], dropouts = [0.05,.1,.2])
-
+df_raw.to_csv('Regularization.csv', index = False)
 
 ###############################################################################
 #Plot of fig3
