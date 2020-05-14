@@ -15,18 +15,6 @@ from Data_Gen import Create_data
 from Experiment_table_Function import Experiment_table
 from scipy.stats import pearsonr
 
-###############################################################################
-#Super Big Architecture Test for NNs.  Here I will test:
-# 1) Do different activations have stronger correlation with targets? 
-# 2) Do different layers of NNs have stronger baseline performance?
-# 3) What is the optimal dropout for the models to improve?
-###############################################################################
-#Testing to see if it works
-df_raw, df_agg, dfa_list, dfb_list = Experiment_table(num_students= [10000], num_tests = [10], 
-                                                      num_questions =[28], num_networks = 5, which_dists = ['norm'],
-                                                      arches = [2], activations = ['sigmoid','tanh'], dropouts = [0.0])
-
-
 
 ###############################################################################
 #Data for Activation Testing
@@ -46,23 +34,30 @@ g.savefig('Activations')
 ###############################################################################
 #Data for Architecture Testing
 ###############################################################################
-df_raw, df_agg, dfa_list, dfb_list = Experiment_table(num_students= [1000, 5000, 10000], num_tests = [1,10], 
-                                                      num_questions =[30,50], num_networks = 5, which_dists = ['norm','laplace'],
-                                                      arches = [1,2,3], activations = ['sigmoid', 'relu'], dropouts = [0.0,0.1,0.2])
-raw = pd.read_csv('./Experiment_Data/raw_testing.csv')
-#ag= raw.groupby(['students','tests','questions', 'Arch_type','dropout_rate']).agg({'th_Corr':{'mean','count'}, 'epochs':{'min','mean'}})
+df_raw, _,_,_ = Experiment_table(num_students= [10000], num_tests = [10], 
+                                 num_questions =[28], num_networks = 20, which_dists = ['norm'],
+                                 arches = [1,2,3], activations = ['relu'], 
+                                 dropouts = [0.0])
+
+df_raw.to_csv('arch_testing.csv')
+raw = pd.read_csv('./Experiment_Data/arch_testing.csv')
+arch = raw[(raw['students']==10000) & (raw['tests']==10) & (raw['questions']==30) & (raw['dropout_rate'] ==0.0)]
+arch.groupby('Arch_type').agg({'th_Corr':{'mean','std'}})
 raw['questions_tests'] = raw['questions'].apply(str)+'_' +raw['tests'].apply(str)
 raw['drop_arch'] = raw['dropout_rate'].apply(str)+'_' +raw['Arch_type'].apply(str)  
 g = sns.catplot(x='questions_tests', y='th_Corr', hue= 'drop_arch', data = raw,
                 height=6, aspect = 3, kind='bar', palette='muted')
 g.set_ylabels("Correlation")
-g.savefig('JibberJabber.png')
+
 
 
 
 ###############################################################################
 #Data for Regularization Testing
 ###############################################################################
+df_raw,_,_,_ = Experiment_table(num_students= [10000], num_tests = [10], num_questions =[28], 
+                                num_networks = 20, which_dists = ['norm'],
+                                arches = [1,2,3], activations = ['relu'], dropouts = [0.05,.1,.2])
 
 
 ###############################################################################
