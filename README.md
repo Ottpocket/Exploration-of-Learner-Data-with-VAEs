@@ -23,21 +23,17 @@ The second table shows a VAE and an AE recovering the students' knowledge of a s
 
 <img src="Images/Table_2_2.PNG" height = 200>
 
-While the VAE has less error in terms of AVRB and RMSE, the AE correlates between with the student knowledge.  Below I have graphed the student knowledge compared to the ground truth.
+While the VAE has less error in terms of AVRB and RMSE, the AE correlates between with the student knowledge.  The graph below illustrates this is the plots of the estimated knowledge with the actual student knowledge.  
 
 <img src="Images/fig5.png" height = 200>
 
+The autoencoder has a strong linear relationship with the true values, but is constrained.  The autoencoder has only rarely assignes someone a score of greater than 1 or less than -1.  The VAE, on the other hand, struggles less with assigning higher or lower scores.  It is less compact than the autoencoder, relating the lower correlation.  Thus the VAE does better with RMSE or absolute error, but has slightly poorer correlation scores than the autoencoder.  
+
 ## Extensions 
-The paper left room for many additional questions to be asked about the capabilities of VAEs for student assessment.  I looked at the following:
-1. Which architectures can best extract the learner data? 
-    1. How much dropout is necessary?
-    1. Which activations work best?
-1. How do VAEs perform with different amounts of learner data?
-1. Do some hidden distributions work better than others?
 
-One of the first questions to be asked about the study, is whether a change in VAE architecture would change the predictive power of the network.  The network used in the paper had only one hidden layer with a sigmoid activation.  It did not employ any regularization, such as dropout, and it did not have more modern activations.  I created many networks with varying levels of compexity to test the if any factors affected the performance in detecting student knowledge.  
+The paper investigated whether a VAE could outperform and AE in terms of reconstructing the test and understanding student knowledge.  Building on this approach, a similar question is whether a change in VAE architecture would change either of the above.  The network used in the paper had only one hidden layer with a sigmoid activation.  It did not employ any regularization, such as dropout, and it did not have more modern activations.  I created many networks with varying levels of compexity to test the if any factors affected the performance in detecting student knowledge.  
 
-The first factor tested was activation.  I had the base network described in the paper, with the only modification being that I changed the inner activation from sigmoidal to either tanh or relu.  I ran five networks of each to test differences.
+The first factor tested was activation.  I had the base network described in the paper, with the only modification being that I changed the inner activation from sigmoidal to either tanh or relu.  I ran twenty networks of each to test differences.
 
 Insert Graph Here
 
@@ -58,4 +54,6 @@ As it turns out,  findings of dropout network running....
 Conclusions: From the testing that has been done above, a good choice in networks is ...
 ## Future Work
 
-There are several extensions that can be taken to the current work.  One is to have the VAE deal with correlated data.  If you take a test that assesses reading and writing, both traits are somewhat correlated.  One's reading ability affects one's writing ability, and vice versa.
+There are several extensions that can be taken to the current work.  One is to have the VAE deal with correlated data.  If you take a test that assesses reading and writing, both traits are somewhat correlated.  One's reading ability affects one's writing ability, and vice versa.  If the underlying distribution of the VAE does not reflect this correlation, something is missing from our understanding of the tests.  This problem can be address by using a MVN as the hidden distribution for the VAE.  Currently, the VAE uses independent normals to generate the data.  
+
+Another extension could be to let the VAE deal with hierarchical latent skills.  Some skills are dependant on other skills.  For instance, a difficult probability problem often entails many other knowledges than just probability.  You may need Calculus or Linear Algebra to solve the probability problem. The knowledge of probability is built ontop of other knowledges.  A useful extension of the current work would be to code this out.  I have done the theoretical work for the project in the "Some Technical Details" pdf under latex.  The final section of this document details how to derive those equations.  
