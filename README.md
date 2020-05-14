@@ -33,11 +33,11 @@ The autoencoder has a strong linear relationship with the true values, but is co
 
 The paper investigated whether a VAE could outperform and AE in terms of reconstructing the test and understanding student knowledge.  Building on this approach, a similar question is whether a change in VAE architecture would change either of the above.  The network used in the paper had only one hidden layer with a sigmoid activation.  It did not employ any regularization, such as dropout, and it did not have more modern activations.  I created many networks with varying levels of compexity to test the if any factors affected the performance in detecting student knowledge.  
 
-The first factor tested was activation.  I had the base network described in the paper, with the only modification being that I changed the inner activation from sigmoidal to either tanh or relu.  I ran twenty networks of each to test differences.
+The first factor tested was activation.  I had the base network described in the paper, with the only modification being that I changed the inner activation from sigmoidal to either tanh or relu.  For each activation, I ran twenty neural networks using the base architecture from the paper.  
 
-Insert Graph Here
+<img src="Images/Activations.PNG" height = 200>
 
-After looking through the results, blah blah blah...
+The differences between the different activations used inside the network is statistically insignificant for causing a difference in the correlations.  An ANOVA test gives further proof of this with p-value 0.42.
 
 The second thing I looked at was whether architecture would make the networks better detect the student understanding.  I tested the original network again a network with 2 hidden layers and one that had 3 hidden layers.  All networks used relu activations.  Adding more layers gives the network more flexibility to better encode the data.  Unfortunately, adding more layers adds more parameters to the model and can stymie learning.  
 
