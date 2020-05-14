@@ -21,27 +21,48 @@ from scipy.stats import pearsonr
 # 2) Do different layers of NNs have stronger baseline performance?
 # 3) What is the optimal dropout for the models to improve?
 ###############################################################################
+#Testing to see if it works
 df_raw, df_agg, dfa_list, dfb_list = Experiment_table(num_students= [10000], num_tests = [10], 
-                                                      num_questions =[28], num_networks = 10, which_dists = ['norm'],
-                                                      arches = [2], activations = ['sigmoid', 'relu', 'tanh'], dropouts = [0.0])
+                                                      num_questions =[28], num_networks = 5, which_dists = ['norm'],
+                                                      arches = [2], activations = ['sigmoid','tanh'], dropouts = [0.0])
+
+
+
+###############################################################################
+#Data for Activation Testing
+###############################################################################
+df_raw, df_agg, dfa_list, dfb_list = Experiment_table(num_students= [10000], num_tests = [10], 
+                                                      num_questions =[28], num_networks = 20, which_dists = ['norm'],
+                                                      arches = [0], activations = ['sigmoid','tanh','relu'], dropouts = [0.0])
+df_raw.to_csv('activation_testing.csv', index=False)
+act = pd.read_csv('./Experiment_Data/activation_testing.csv')
+act.groupby('activations').agg({'th_Corr':{'mean', 'std'}})#no difference whatsoever
+
+g = sns.catplot(x= 'activations',y='th_Corr' ,  
+                data =act, kind = 'bar', palette= 'muted')
+g.set_ylabels("Correlation")
+g.fig.suptitle('Differences in Correlations for Activations')
+g.savefig('Activations')
+###############################################################################
+#Data for Architecture Testing
+###############################################################################
 df_raw, df_agg, dfa_list, dfb_list = Experiment_table(num_students= [1000, 5000, 10000], num_tests = [1,10], 
                                                       num_questions =[30,50], num_networks = 5, which_dists = ['norm','laplace'],
                                                       arches = [1,2,3], activations = ['sigmoid', 'relu'], dropouts = [0.0,0.1,0.2])
-
-#Graphing the results of the test
-raw = pd.read_csv('raw_testing.csv')
-ag = raw.groupby(['students','tests','questions', 'Arch_type','dropout_rate']).agg({'th_Corr':{'mean','count'}, 'epochs':{'min','mean'}})
-#Test of data
-import seaborn as sns
-import matplotlib.pyplot as plt
-sns.set(style="whitegrid")
-plt.savefig()
+raw = pd.read_csv('./Experiment_Data/raw_testing.csv')
+#ag= raw.groupby(['students','tests','questions', 'Arch_type','dropout_rate']).agg({'th_Corr':{'mean','count'}, 'epochs':{'min','mean'}})
 raw['questions_tests'] = raw['questions'].apply(str)+'_' +raw['tests'].apply(str)
 raw['drop_arch'] = raw['dropout_rate'].apply(str)+'_' +raw['Arch_type'].apply(str)  
 g = sns.catplot(x='questions_tests', y='th_Corr', hue= 'drop_arch', data = raw,
                 height=6, aspect = 3, kind='bar', palette='muted')
 g.set_ylabels("Correlation")
 g.savefig('JibberJabber.png')
+
+
+
+###############################################################################
+#Data for Regularization Testing
+###############################################################################
 
 
 ###############################################################################
@@ -57,7 +78,7 @@ sns.scatterplot(x = 'True_Values',y= 'Estimates_vae', ax=ax[1], hue = 'skill_num
 ax[0].set_ylim([0.0,4])
 ax[1].set_ylim([0.0,4])
 fig.show()
-fig.savefig('Parameter Recovery.png')
+fig.savefig('fig3.png')
 
 ###############################################################################
 #Plot of fig 4
