@@ -103,7 +103,7 @@ def get_stats_over_time(A_list, B_list, a_true, b_true, qmat, matrix = False, H 
             a_true = np.transpose(a_true)
         else:
             A_list = np.exp(H.history['log_A'])
-        B_list = np.exp(H.history['B'])
+        B_list = H.history['B']
     b = []
     if H is not None:
         num_questions = A_list[0].shape[0]
