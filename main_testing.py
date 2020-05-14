@@ -13,6 +13,7 @@ from Replication_main import Replication_of_Paper_Figures
 from Teaching_Vae_Class import Teaching_Vae
 from Data_Gen import Create_data
 from Experiment_table_Function import Experiment_table
+from scipy.stats import pearsonr
 
 ###############################################################################
 #Super Big Architecture Test for NNs.  Here I will test:
@@ -93,3 +94,26 @@ ax[1].set_ylim([-4.0,4.0])
 fig.show()
 fig.savefig('fig5.png')
 
+
+fig, ax =plt.subplots(nrows = 1, ncols = 2, figsize = (15, 5))
+sns.scatterplot(x = 'Theta2_true',y= 'Theta2_ae',  ax=ax[0],  
+                data = fig5).set_title('AE prediction of 2nd latent trait')
+sns.scatterplot(x = 'Theta2_true',y= 'Theta2_vae',  ax=ax[1],  
+                data = fig5).set_title('VAE prediction of 2nd latent trait')
+ax[0].set_ylim([-4.0,4.0])
+ax[1].set_ylim([-4.0,4.0])
+fig.show()
+#fig.savefig('fig5_2.png')
+
+fig, ax =plt.subplots(nrows = 1, ncols = 2, figsize = (15, 5))
+sns.scatterplot(x = 'Theta3_true',y= 'Theta3_ae',  ax=ax[0],  
+                data = fig5).set_title('AE prediction of 3rd latent trait')
+sns.scatterplot(x = 'Theta3_true',y= 'Theta3_vae',  ax=ax[1],  
+                data = fig5).set_title('VAE prediction of 3rd latent trait')
+ax[0].set_ylim([-4.0,4.0])
+ax[1].set_ylim([-4.0,4.0])
+fig.show()
+#fig.savefig('fig5_3.png')
+
+
+pearsonr(fig4['True_Values'], fig4['Estimates_vae'])
