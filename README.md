@@ -35,7 +35,7 @@ The paper investigated whether a VAE could outperform and AE in terms of reconst
 
 The first factor tested was activation.  I had the base network described in the paper, with the only modification being that I changed the inner activation from sigmoidal to either tanh or relu.  For each activation, I ran twenty neural networks using the base architecture from the paper.  
 
-<img src="Images/Activations.PNG" height = 200>
+<img src="Images/Activations.png" height = 300>
 
 The differences between the different activations used inside the network is statistically insignificant for causing a difference in the correlations.  An ANOVA test gives further proof of this with p-value 0.42.
 
