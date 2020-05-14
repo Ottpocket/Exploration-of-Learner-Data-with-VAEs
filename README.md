@@ -35,39 +35,27 @@ The paper left room for many additional questions to be asked about the capabili
 1. How do VAEs perform with different amounts of learner data?
 1. Do some hidden distributions work better than others?
 
-I have tentative answers for the first question.  
+One of the first questions to be asked about the study, is whether a change in VAE architecture would change the predictive power of the network.  The network used in the paper had only one hidden layer with a sigmoid activation.  It did not employ any regularization, such as dropout, and it did not have more modern activations.  I created many networks with varying levels of compexity to test the if any factors affected the performance in detecting student knowledge.  
+
+The first factor tested was activation.  I had the base network described in the paper, with the only modification being that I changed the inner activation from sigmoidal to either tanh or relu.  I ran five networks of each to test differences.
+
+Insert Graph Here
+
+After looking through the results, blah blah blah...
+
+The second thing I looked at was whether architecture would make the networks better detect the student understanding.  I tested the original network again a network with 2 hidden layers and one that had 3 hidden layers.  All networks used relu activations.  Adding more layers gives the network more flexibility to better encode the data.  Unfortunately, adding more layers adds more parameters to the model and can stymie learning.  
+
+picture of thingy
+
+As you can see, ...
+
+I finally tested if dropout regularization would improve accuracy. Dropout regularization can lead to dramatic improvements in accuracy in classification problems, so I guessed that it would improve the student knowledge during training. 
+
+picture of dropout 
+
+As it turns out,  findings of dropout network running....
+
+Conclusions: From the testing that has been done above, a good choice in networks is ...
 ## Future Work
 
-
-The author has 1) replicated the findings of “Autoencoders for Educational Assessment,” 2) created a function to test different a) data and b) architectural assumptions for the VAE than those provided by the paper, 3) written additional hidden distribution to test, and 4) written a multilevel vae for testing subject where knowledge of one subject affects knowledge of another.  
-
-Introduction
-Autoencoders for Educational Assessment showed the viability of using VAEs to uncover the student understanding in item response theory models.  The hidden knowledge of students highly correlated to the true hidden knowledge that was simulated.  Additionally, the VAE was able to estimate facts about the composition of the test itself with high correlation to the ground truth.  
-In the experiments given by the paper, the architecture of the VAE was as follows:
-1.	 28 dim input
-2.	10 dim hidden layer with sigmoid activation
-3.	3 dim normal stochastic layer outputting 
-a.	Statics of the stochastic function
-b.	The stochastic output
-4.	28 dim output layer with sigmoid activation
-a.	Q-matrix is multiplied by the weight matrix to give interpretability.
-
-The input and output layer both had 28 layers because the tests fed into the network had 28 questions.  The stochastic layer had 3 dimensions because the assessment tested 3 hidden knowledge traits.  The paper gave room for several extensions.  The author chose to focus on the following:
-1)	How does model architecture affect quality?
-2)	How much data is necessary for the VAE uncover both test and student data with high correlation to ground truth?  
-3)	Are the predictions invariant to the distribution of the activation function?  
-a.	Double exponential vs Normal
-b.	Quantiles of gamma vs Normal 
-i.	Bin the gammas into quantiles and match correlation with normal quantiles
-4)	What happens if the student knowledge is nested?
-a.	Some hidden knowledge creates others, i.e. Using algebra to solve a trig problem	
-b.	 Some components have covariance. i.e. reading skill affects writing skill
-5)	A future direction would be what to do if only a partially defined Q matrix is available.  
-a.	Semi supervised learning to determine rest of Q-matrix
-
-
-Replication. 
- The author was able to replicate the paper.  While the RMSE and MAPE of the author were lower than the origenal paper, the correlations where worse.
-
- The aut  
-
+There are several extensions that can be taken to the current work.  One is to have the VAE deal with correlated data.  If you take a test that assesses reading and writing, both traits are somewhat correlated.  One's reading ability affects one's writing ability, and vice versa.
