@@ -241,12 +241,12 @@ class Teaching_Vae:
             layers = k.layers.Dense(10, name = 'Encoder_hidden_1', activation = activ)(layers)
         if type_ ==1:
             layers = k.layers.Dense(10, name = 'Encoder_hidden_1', activation = activ)(layers)    
-            layers = k.layers.BatchNormalization(name = 'Batch_Norm_1')(layers)
+            #layers = k.layers.BatchNormalization(name = 'Batch_Norm_1')(layers) #This creates high variance.  Commented out
             layers = k.layers.Dropout(rate = dropout_rate, name = 'Dropout_1')(layers)
         else:
             for i in range(type_):
                 layers = k.layers.Dense(hidden_neurons, name = 'Encoder_hidden_{}'.format(i), activation = activ)(layers) 
-                layers = k.layers.BatchNormalization(name = 'Batch_Norm_{}'.format(i))(layers)
+                #layers = k.layers.BatchNormalization(name = 'Batch_Norm_{}'.format(i))(layers) #Creates too high variance
                 layers = k.layers.Dropout(rate = dropout_rate, name = 'Dropout_{}'.format(i))(layers)
                 hidden_neurons = np.ceil(hidden_neurons / 2)
         return layers
