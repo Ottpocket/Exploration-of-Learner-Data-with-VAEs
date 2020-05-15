@@ -41,17 +41,16 @@ The differences between the different activations used inside the network is sta
 
 The second thing I looked at was whether architecture would make the networks better detect the student understanding.  I tested the original network again a network with 2 hidden layers and one that had 3 hidden layers.  All networks used relu activations.  Adding more layers gives the network more flexibility to better encode the data.  Unfortunately, adding more layers adds more parameters to the model and can stymie learning.  
 
-picture of thingy
+For my experiments, I tested 3 different types of Architectures that I labelled 1, 2, and 3.  Architecture 1 was identical to the paper, architecture 2 had two hidden layers between the input and the stochastic layer.  They had 14 and 7 neurons, respectively.  Architecture 3 had 3 hidden layers.  It had 14, 7, and 4 neurons in the hidden layers.  For each architecture type, I had dropout layers after each hidden layer.  Batch normalization tended to give to much variance to the predictions, so I eliminated them from the network.  
 
-As you can see, ...
+For the experiment, I ran each architecture at 4 levels of dropout: 0.0, 0.05, 0.1, and 0.2.  
 
-I finally tested if dropout regularization would improve accuracy. Dropout regularization can lead to dramatic improvements in accuracy in classification problems, so I guessed that it would improve the student knowledge during training. 
+<img src="Images/Architecture_Test.png" height = 300>
 
-picture of dropout 
+<img src="Images/Architecture_Test_data.png" height = 300>
 
-As it turns out,  findings of dropout network running....
+The best overall performance was the origenal paper's network with no dropout.  This was closely followed by the 2 layer network with no dropout.  Interestingly, dropout seemed to hurt overall performance.  For future work, even more minimal architectures can be tested, such as architectures with one hidden layer and less than ten neurons.  
 
-Conclusions: From the testing that has been done above, a good choice in networks is ...
 ## Future Work
 
 There are several extensions that can be taken to the current work.  One is to have the VAE deal with correlated data.  If you take a test that assesses reading and writing, both traits are somewhat correlated.  One's reading ability affects one's writing ability, and vice versa.  If the underlying distribution of the VAE does not reflect this correlation, something is missing from our understanding of the tests.  This problem can be address by using a MVN as the hidden distribution for the VAE.  Currently, the VAE uses independent normals to generate the data.  
