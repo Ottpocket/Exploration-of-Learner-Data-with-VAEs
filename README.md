@@ -1,5 +1,5 @@
 # Exploration of Learner Data with VAEs
-Given student test scores, can a machine understand with granularity what a student knows about a given subject?  If a student scores an 65 on a trig test, does the student not understand the trigonometry, or just the algebra behind the trig?  "Autoencoders for Educational Assessment" by Converse, et al., found a way to automate the process of finding latent student knowledge using Variational Autoencoders.  Through integrating the variational autoencoder with some outside information, the authors were able to obtrain strong estimates for ground truth student knowledge.  Moreover, they were able to uncover exactly how the tests themselves were formed were great precision.  
+Given student test scores, can a machine understand with granularity what a student knows about a given subject?  If a student scores a 65 on a trig test, does the student not understand the trigonometry, or just the algebra behind the trig?  "Autoencoders for Educational Assessment" by Converse, et al., found a way to automate the process of finding latent student knowledge using Variational Autoencoders.  Through integrating the variational autoencoder with some outside information, the authors were able to obtrain strong estimates for ground truth student knowledge.  Moreover, they were able to uncover exactly how the tests themselves were formed were great precision.  
 
 This github repository is devoted to reproducing the findings of "Autoencoders for Educational Assessment" and extending the research of the paper.  The first part of this will focus on my replication.  Following this, I will present several questions that I have answered concerning the architecture and data consumptions of the VAEs.  After this, I will present future areas for the next teams to tackle.    
 
@@ -27,7 +27,7 @@ While the VAE has less error in terms of AVRB and RMSE, the AE correlates betwee
 
 <img src="Images/fig5.png" height = 200>
 
-The autoencoder has a strong linear relationship with the true values, but is constrained.  The autoencoder has only rarely assignes someone a score of greater than 1 or less than -1.  The VAE, on the other hand, struggles less with assigning higher or lower scores.  It is less compact than the autoencoder, relating the lower correlation.  Thus the VAE does better with RMSE or absolute error, but has slightly poorer correlation scores than the autoencoder.  
+The autoencoder has a strong linear relationship with the true values, but is constrained.  The autoencoder has only rarely assignes someone a score of greater than 1 or less than -1.  The VAE, on the other hand, struggles less with assigning higher or lower scores.  It is less compact than the autoencoder, hence the lower correlation.  The VAE does better with RMSE or absolute error, but has slightly poorer correlation scores than the autoencoder.  
 
 ## Extensions 
 
@@ -37,9 +37,9 @@ The first factor tested was activation.  I had the base network described in the
 
 <img src="Images/Activations.png" height = 300>
 
-The differences between the different activations used inside the network is statistically insignificant for causing a difference in the correlations.  An ANOVA test gives further proof of this with p-value 0.42.
+The differences between the activations used inside the network is statistically insignificant for causing a difference in the correlations.  An ANOVA test gives further proof of this with p-value 0.42.
 
-The second thing I looked at was whether architecture would make the networks better detect the student understanding.  I tested the original network again a network with 2 hidden layers and one that had 3 hidden layers.  All networks used relu activations.  Adding more layers gives the network more flexibility to better encode the data.  Unfortunately, adding more layers adds more parameters to the model and can stymie learning.  
+The second thing I looked at was whether architecture would make the networks better in detect the student understanding.  I tested the original network again a network with 2 hidden layers and one that had 3 hidden layers.  All networks used relu activations.  Adding more layers gives the network more flexibility to better encode the data.  Unfortunately, adding more layers adds more parameters to the model and can stymie learning.  
 
 For my experiments, I tested 3 different types of Architectures that I labelled 1, 2, and 3.  Architecture 1 was identical to the paper, architecture 2 had two hidden layers between the input and the stochastic layer.  They had 14 and 7 neurons, respectively.  Architecture 3 had 3 hidden layers.  It had 14, 7, and 4 neurons in the hidden layers.  For each architecture type, I had dropout layers after each hidden layer.  Batch normalization tended to give to much variance to the predictions, so I eliminated them from the network.  
 
@@ -49,10 +49,10 @@ For the experiment, I ran each architecture at 4 levels of dropout: 0.0, 0.05, 0
 
 <img src="Images/Architecture_Test_data.png" height = 300>
 
-The best overall performance was the origenal paper's network with no dropout.  This was closely followed by the 2 layer network with no dropout.  Interestingly, dropout seemed to hurt overall performance.  For future work, even more minimal architectures can be tested, such as architectures with one hidden layer and less than ten neurons.  
+The best overall performance was the original paper's network with no dropout.  This was closely followed by the 2 layer network with no dropout.  Interestingly, dropout seemed to hurt overall performance.  For future work, even more minimal architectures can be tested, such as architectures with one hidden layer and less than ten neurons.  
 
 ## Future Work
 
 There are several extensions that can be taken to the current work.  One is to have the VAE deal with correlated data.  If you take a test that assesses reading and writing, both traits are somewhat correlated.  One's reading ability affects one's writing ability, and vice versa.  If the underlying distribution of the VAE does not reflect this correlation, something is missing from our understanding of the tests.  This problem can be address by using a MVN as the hidden distribution for the VAE.  Currently, the VAE uses independent normals to generate the data.  
 
-Another extension could be to let the VAE deal with hierarchical latent skills.  Some skills are dependant on other skills.  For instance, a difficult probability problem often entails many other knowledges than just probability.  You may need Calculus or Linear Algebra to solve the probability problem. The knowledge of probability is built ontop of other knowledges.  A useful extension of the current work would be to code this out.  I have done the theoretical work for the project in the "Some Technical Details" pdf under latex.  The final section of this document details how to derive those equations.  
+Another extension could be to let the VAE deal with hierarchical latent skills.  Some skills are dependant on other skills.  For instance, a difficult probability problem often entails many other knowledges than just probability.  You may need Calculus or Linear Algebra to solve the probability problem. The knowledge of probability is built ontop of other knowledges.  A useful extension of the current work would be to code this out.  I have done the theoretical work for the project in the "Some Technical Details" pdf under latex.  The final section of that document details how to derive those equations.  
